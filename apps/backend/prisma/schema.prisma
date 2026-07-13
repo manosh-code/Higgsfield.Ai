@@ -12,64 +12,60 @@ datasource db {
   provider = "postgresql"
 }
 
-
 model User {
-  id              String      @id     @default(uuid())
-  username        String      @unique
-  password        String
-  avatars         Avatar[]
-  avatarVideos    AvatarVideo[]
+  id           String        @id @default(uuid())
+  username     String        @unique
+  password     String
+  avatars      Avatar[]
+  avatarVideos AvatarVideo[]
 }
 
 model Avatar {
-  id             String     @id   @default(uuid())
-  userId         String
-  name           String
-  avatarImage    AvatarImage[]
-  avatarVideoReference    AvatarVideoReference[]
-  user           user       @relation(fields: [userId], reference: [id])
-
+  id                   String                 @id @default(uuid())
+  userId               String
+  name                 String
+  avatarImage          AvatarImage[]
+  avatarVideoReference AvatarVideoReference[]
+  user                 User                   @relation(fields: [userId], references: [id])
 }
 
 model AvatarImage {
-  id           String    @id       @default(uuid())
-  avatarId     String
-  type         AvatarImageType
-  url          String
-  avatar       Avatar     @relation(fields: [avatarId], reference: [id])
-
+  id       String          @id @default(uuid())
+  avatarId String
+  type     AvatarImageType
+  url      String
+  avatar   Avatar          @relation(fields: [avatarId], references: [id])
 }
 
 enum AvatarImageType {
-  User 
-  model
+  User
+  Model
 }
 
 model AvatarVideo {
-  id            String      @id      @default(uuid())
-  userId        String
-  prompt        String
-  startFrame    String?
-  endFrame      String?
-  duration      Int
-  width         Int
-  height        Int
-  status        AvatarVideoStatus
-  avatarVideoReference      AvatarVideoReference[]
-  user          User        @relation(fields:  [userId], reference: [id])
-
+  id                   String                 @id @default(uuid())
+  userId               String
+  prompt               String
+  startFrame           String?
+  endFrame             String?
+  duration             Int
+  width                Int
+  height               Int
+  status               AvatarVideoStatus
+  avatarVideoReference AvatarVideoReference[]
+  user                 User                   @relation(fields: [userId], references: [id])
 }
 
 model AvatarVideoReference {
-  id                String       @id       @default(uuid())
-  avatarVideoId     String
-  avatarId          String
-  avatar            Avatar       @relation(fields: [avatarId], reference: [id])
-  avatarVideo       AvatarVideo  @relation(fields:  [avatarVideoId], reference: [id])
+  id            String      @id @default(uuid())
+  avatarVideoId String
+  avatarId      String
+  avatar        Avatar      @relation(fields: [avatarId], references: [id])
+  avatarVideo   AvatarVideo @relation(fields: [avatarVideoId], references: [id])
 }
 
 enum AvatarVideoStatus {
   Pending
-  Done 
+  Done
   Error
 }
