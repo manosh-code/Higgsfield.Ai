@@ -6,7 +6,7 @@ import { generateVideo} from "./video";
 import cors from "cors";
 const jwt = require("jsonwebtoken");
 import  bcrypt from "bcrypt";
-import JWT_SECRET from "./env";
+import {JWT_SECRET} from "./env";
 
 const app = express();
 app.use(cors());
@@ -79,6 +79,16 @@ app.post("/api/v1/signin", async(req, res) => {
     })
 })
 
-app.post("/api/v1/avatar", (req, res) => {
-    
+
+// avatar 
+app.post("/api/v1/avatar", async (req, res) => {
+  const { success, data } = CreateAvatarSchema.safeParse(req.body);
+  if(!success) {
+    res.status(411).json({
+        message: "Incorrect"
+    });
+    return 
+  }
+
+  
 })
