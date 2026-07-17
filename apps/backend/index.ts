@@ -6,7 +6,7 @@ import { generateVideo} from "./video";
 import cors from "cors";
 const jwt = require("jsonwebtoken");
 import  bcrypt from "bcrypt";
-import {JWT_SECRET} from "./env";
+import { uuid } from "uuidv4";
 
 const app = express();
 app.use(cors());
@@ -68,7 +68,7 @@ app.post("/api/v1/signin", async(req, res) => {
     const token = jwt.sign({
         id: user.id,
         username: user.username
-    }, JWT_SECRET,{
+    }, process.env.JWT_SECRET,{
         expriresIn: "7d"
     }
     );
@@ -89,6 +89,71 @@ app.post("/api/v1/avatar", async (req, res) => {
     });
     return 
   }
-
+  const leftProfileId = uuid();
+  const RightProfileId = uuid();
+  const frontProfileId = uuid();
   
+  // put in s3 and then put in db
+  await prisma.avatar.create({
+    data: {
+        userId: "1",
+        name: req.body.name
+    }
+  })
+  res.json({});
 })
+
+app.get("/api/v1/avatar/:avatarId", async (req , res)=> {
+    const avatars = await prisma.avatar.findMany({
+        where: {
+            userId: "1",
+        }
+    })
+    console.log(avatars);
+    res.json({avatars});
+})
+
+app.get("/api/v1/avatars", async (req, res) => {
+    const avatars = await prisma.avatar.findMany({
+        where:{
+            userId: "1"
+        }
+    })
+    res.json({avatars});
+})
+
+// Video 
+
+app.post("/api/v1/video", async (req, res) => {
+    await generateVideo("The video opens with a medium, eye-level shot of a beautiful man with dark hair and warm brown eyes. She wears a magnificent, high-fashion flamingo dress with layers of pink and fuchsia feathers, complemented by whimsical pink, heart-shaped sunglasses. She walks with serene confidence through the crystal-clear, shallow turquoise water of a sun-drenched lagoon. The camera slowly pulls back to a medium-wide shot, revealing the breathtaking scene as the dress's long train glides and floats gracefully on the water's surface behind her. The cinematic, dreamlike atmosphere is enhanced by the vibrant colors of the dress against the serene, minimalist landscape, capturing a moment of pure elegance and high-fashion fantasy.", 
+      ["https://raw.githubusercontent.com/100xdevs-bootcamp-1/higgsy/refs/heads/main/apps/backend/assets/09578560-870f-4b23-a1cb-b549aa38a23f.png",
+        "https://raw.githubusercontent.com/100xdevs-bootcamp-1/higgsy/refs/heads/main/apps/backend/assets/a9d55f96-bc90-45e6-b078-7593b8bc3b11.png",
+        "https://raw.githubusercontent.com/100xdevs-bootcamp-1/higgsy/refs/heads/main/apps/backend/assets/8106a04c-bed5-4ac4-94ef-970c5aee1518.png"
+      ], "./output/video.mp4")
+    res.json({});
+  });
+
+
+app.get("/api/v1/video/:videoId", (req, res) => {
+    res.json({});
+});
+  
+app.get("/api/v1/videos", (req, res) => {
+    res.json({});
+});
+  
+  // User
+app.get("/api/v1/me", (req, res) => {
+    res.json({});
+});
+  
+  // Models
+app.get("/api/v1/models", (req, res) => {
+    res.json({});
+});
+  
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
