@@ -1,22 +1,27 @@
 
-import "./index.css";
-import { Button } from "./components/ui/button";
+import "./index.css"
+import { BrowserRouter, Route, Routes } from "react-router";
+import { Appbar } from "./components/Appbar";
+import { LandingPage } from "./pages/Landing";
+import { Signin } from "./pages/Signin";
+import { Signup } from "./pages/Signup";
+import { Dashboard } from "./pages/Dashboard";
+import { VideoCreator } from "./pages/VideoCreater";
 
 
 export function App() {
   return (
-    <div  className="bg-black text-white  flex  justify-between">
-      <div  className="p-4  text-xl">
-        Higgsfield
-      </div>
-      <div>
-        <div>
-          <Button variant={"outline"}  className="flex  items-center">Signup</Button>
-        </div>
-        <div>
-          <Button variant={"outline"}  className="flex  items-center">Signin</Button>
-        </div>
-      </div>
+    <div  >
+      <Appbar/>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/"  element={<LandingPage />} />
+          <Route path="/signup" element={<Signup/>} />
+          <Route  path="/signin" element={<Signin/>} />
+          <Route path="/dashboard" element={<Dashboard/>} />
+          <Route path="/video-creator" element={<VideoCreator/>} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
